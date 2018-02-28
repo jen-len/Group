@@ -1,0 +1,14 @@
+package finalproj;
+
+public class Food 
+{
+	private int time;
+	private char ingredients;
+	public char getIngredients() {
+		return ingredients;
+	}
+	public void setIngredients(char ingredients) {
+		this.ingredients = ingredients;
+	}
+
+}

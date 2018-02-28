@@ -1,0 +1,19 @@
+package finalproj;
+import java.util.*;
+
+public class Main 
+{
+	public static void Main()
+	{
+		// what do they have
+
+		Scanner userInput = new Scanner(System.in);
+		System.out.println("What do you have in your fridge?");
+		ArrayList<Character> userNum = userInput.nextchar();
+		
+		// take user input of what they have in on hand and time
+		// implement user interface?
+		
+	}
+
+}

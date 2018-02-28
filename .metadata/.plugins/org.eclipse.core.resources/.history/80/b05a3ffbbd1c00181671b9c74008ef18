@@ -1,0 +1,8 @@
+package finalproj;
+
+public class Food 
+{
+	private int time;
+	private char ingredients;
+
+}
