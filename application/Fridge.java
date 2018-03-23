@@ -20,11 +20,11 @@ public class Fridge
 		// milk branch
 		if(e.contains("milk"))
 		{
-			suggestions.add("a glass of milk\n");
+			suggestions.add("\na glass of milk");
 
 			if(e.contains("chicken"))
 			{
-				suggestions.add("pour the milk on the chicken 4Head\n");
+				suggestions.add("\npour the milk on the chicken 4Head");
 			}
 			
 			
@@ -33,18 +33,18 @@ public class Fridge
 		// eggs branch
 		if(e.contains("eggs"))
 		{
-			suggestions.add("fry some eggs\n");
+			suggestions.add("\nfry some eggs");
 			
 			if(e.contains("mayonnaise"))
 			{
-				suggestions.add("egg salad\n");
+				suggestions.add("\negg salad");
 			}
 		}
 		
 		// chicken branch
 		if(e.contains("chicken"))
 		{
-			suggestions.add("eat the chicken RAW SwiftRage\n");
+			suggestions.add("\neat the chicken RAW SwiftRage");
 			
 		}
 		
@@ -52,6 +52,8 @@ public class Fridge
 		{
 			suggestions.add("a trip to the grocery store");
 		}
+		
+		
 		
 		
 		return suggestions;
@@ -74,6 +76,11 @@ public class Fridge
 	public void setCounter(int x)
 	{
 		this.counter=x;
+	}
+	public String normText(ArrayList<String> e)
+	{
+		String normie = e.toString().replace("[","").replace("]","").replace(",", "");
+		return normie;
 	}
 	
 		

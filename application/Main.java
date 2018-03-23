@@ -28,6 +28,7 @@ public class Main extends Application
 	Fridge fridge = new Fridge();
 	int x =0;
 	ArrayList<String> stuff = new ArrayList<String>();
+	ArrayList<String> recipes = new ArrayList<String>();
 	Scene Opening, Other;
 		
 	@Override
@@ -443,8 +444,9 @@ public class Main extends Application
 		primaryStage.setTitle("conclusion");
 		VBox layout1 = new VBox(20);
 		layout1.setPadding(new Insets(5,5,5,15));
-
+		
 		TextArea text = new TextArea();
+		
 		
 		Button button1 = new Button("but wait... There's more");
 		button1.setOnAction(e -> 
@@ -474,13 +476,9 @@ public class Main extends Application
 			}
 		}
 		);
-		
-		
-		
-		
-		text.setText("You have " + stuff + "\nwith that you can make " +
-		fridge.findRecipe(stuff));
-		// straight up I don't know how to format this to have no commas or square brackets
+
+		text.setText("You have " + stuff + "\nwith that you can make: " +
+		fridge.normText(fridge.findRecipe(stuff)));
 
 		Scene Selection= new Scene(layout1, 400, 400);
 		
