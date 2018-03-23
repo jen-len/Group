@@ -1,44 +1,63 @@
 package application;
 
+
 import java.util.ArrayList;
+
+
 
 public class Fridge 
 {
 	private String what; 
 	int counter =0;
+	ArrayList<String> suggestions = new ArrayList<String>();
+ 
 	
 	public Fridge()
-	{
-		
-	}
+	{	}
 
-	public void findRecipe(ArrayList<String> e)
-	{		
-		// OBVIOUSLY this could be a shit load more organized
-		// like each thing would have its own decision trees, would be time consuming but easy
-		// but not that bad because if all you have is milk + carrots, there isn't much you could make
-		// unless of course you guys want to go stupid complicated
+	public ArrayList<String> findRecipe(ArrayList<String> e)
+	{	
 		// milk branch
 		if(e.contains("milk"))
 		{
+			suggestions.add("a glass of milk\n");
+
 			if(e.contains("chicken"))
 			{
-				System.out.println("pour the milk on the chicken 4Head");
-				return;
+				suggestions.add("pour the milk on the chicken 4Head\n");
 			}
 			
-			System.out.println("have a glass of milk");
-			return;
 			
 		}
+		
+		// eggs branch
+		if(e.contains("eggs"))
+		{
+			suggestions.add("fry some eggs\n");
+			
+			if(e.contains("mayonnaise"))
+			{
+				suggestions.add("egg salad\n");
+			}
+		}
+		
 		// chicken branch
 		if(e.contains("chicken"))
 		{
-			System.out.println("eat the chicken");
-			return;
+			suggestions.add("eat the chicken RAW SwiftRage\n");
+			
 		}
-	}
 		
+		if (e.size() == 0)
+		{
+			suggestions.add("a trip to the grocery store");
+		}
+		
+		
+		return suggestions;
+
+	}
+	
 	public String getWhat()
 	{
 		return this.what;
@@ -52,8 +71,11 @@ public class Fridge
 	{
 		return counter;
 	}
+	public void setCounter(int x)
+	{
+		this.counter=x;
+	}
 	
-	
-	
-
+		
 }
+	
