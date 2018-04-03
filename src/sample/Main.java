@@ -146,7 +146,8 @@ public class Main extends Application {
                     nameCode = false;
                     fridgeStuff = rs.getString("Fridge");
                     System.out.println("DB OK");
-                } else                    {
+                }
+                else                   {
                         nameCode = true;
                         stmt.executeUpdate("INSERT INTO Users (User,Fridge) " +
                                 "VALUES('" + userName + "', '" + fridgeStuff + "')");
@@ -537,7 +538,7 @@ public class Main extends Application {
          btnDairy.setOnAction(e ->
                  {
                      try {
-                         stuff.clear();
+//                         stuff.clear();
                          fridge.setCounter(0);
                          MainMenu(primaryStage);
                      } catch (Exception e1) {
@@ -555,22 +556,148 @@ public class Main extends Application {
                      }
                  }
          );
+
+         StringBuilder newFood = new StringBuilder();
+         for (String s : stuff){
+
+                     newFood.append(s);
+                     newFood.append(", ");
+
+         }
+
+
+   System.out.println(newFood);
+    fridgeStuff = fridgeStuff + newFood;
+        System.out.println(fridgeStuff);
+
          Button saveBtn = new Button("Save Fridge");
+         Button deleteBtn = new Button("Delete User Data");
+         Button deletefBtn = new Button("Delete User Fridge");
 
 
+         deleteBtn.setOnAction(new EventHandler<ActionEvent>() {
+
+
+                                   public void handle(ActionEvent e) {
+                                       if (userName != null && !userName.isEmpty()) {
+                                           System.out.println(userName);
+                                           System.out.println(fridgeStuff);
+                                           DeleteData();
+                                           //         MainMenu(primaryStage);
+                                       }
+                                       System.out.println(fridgeStuff);
+                                       //new usser created empty fridge
+
+                                   }
+
+
+
+                               }
+         );
+
+         saveBtn.setOnAction(new EventHandler<ActionEvent>() {
+
+                                     public void handle(ActionEvent e) {
+                                         if (userName != null && !userName.isEmpty()) {
+                                             System.out.println(userName);
+                                           System.out.println(fridgeStuff);
+                                            SaveData();
+                                        //         MainMenu(primaryStage);
+                                             }
+                                             System.out.println(fridgeStuff);
+                                             //new usser created empty fridge
+
+                                         }
+                                    }
+
+
+
+         );
+         deletefBtn.setOnAction(new EventHandler<ActionEvent>() {
+
+
+                                   public void handle(ActionEvent e) {
+                                       if (userName != null && !userName.isEmpty()) {
+                                           System.out.println(userName);
+                                           System.out.println(fridgeStuff);
+                                           DeleteFridge();
+                                           //         MainMenu(primaryStage);
+                                       }
+                                       System.out.println(fridgeStuff);
+                                       //new usser created empty fridge
+
+                                   }
+
+
+
+                               }
+         );
 
          txtDone.setText("You have " + stuff + "\nWith that you can make: " +
                  fridge.normText(fridge.findRecipe(stuff)));
 
          Scene Selection = new Scene(layout1, 400, 400);
 
-         layout1.getChildren().addAll(txtDone, btnDairy, btnMeat, saveBtn);
+         layout1.getChildren().addAll(txtDone, btnDairy, btnMeat, saveBtn,deleteBtn,deletefBtn);
          primaryStage.setScene(Selection);
          primaryStage.show();
      }
 
      //Jen's STUFF PreviousRecipe method connects to DbBtn
-     public void PreviousRecipe(Stage primaryStage) {
+
+    public void SaveData()    {
+        try {
+            Connection con = DriverManager.getConnection(jdbcUrl);
+            Statement stmt = con.createStatement();
+            stmt.executeUpdate("UPDATE Users SET User = '" + userName + "', Fridge = '"
+                        + fridgeStuff + "'WHERE User = '" + userName + "'");
+
+            stmt.close();
+            con.close();
+        System.out.println("DB OK");
+
+
+    } catch (SQLException sqlE) {
+            System.out.println("SQL Exception " + sqlE.toString());
+        }
+    }
+
+    public void DeleteFridge()    {
+        try {
+            Connection con = DriverManager.getConnection(jdbcUrl);
+            Statement stmt = con.createStatement();
+            stmt.executeUpdate("UPDATE Users SET Fridge = '"  +
+                  "' WHERE User = '" + userName + "'");
+
+            stmt.close();
+            con.close();
+            System.out.println("DB OK");
+
+
+        } catch (SQLException sqlE) {
+            System.out.println("SQL Exception " + sqlE.toString());
+        }
+    }
+
+    public void DeleteData()    {
+        try {
+            Connection con = DriverManager.getConnection(jdbcUrl);
+            Statement stmt = con.createStatement();
+            stmt.executeUpdate("DELETE FROM Users WHERE User = '" + userName + "'");
+
+            stmt.close();
+            con.close();
+            System.out.println("DB OK");
+
+
+        } catch (SQLException sqlE) {
+            System.out.println("SQL Exception " + sqlE.toString());
+        }
+    }
+
+
+
+    public void PreviousRecipe(Stage primaryStage) {
 
          primaryStage.setTitle("Your Previous selection");
          VBox layout1 = new VBox(20);
