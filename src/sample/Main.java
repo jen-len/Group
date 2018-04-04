@@ -6,13 +6,16 @@ import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 
@@ -22,38 +25,38 @@ public class Main extends Application {
      static String userName = "";
      static String fridgeStuff = "";
      static String jdbcUrl = "jdbc:sqlite:src/dbProject.db";
+     String grey = ("-fx-font: 14 arial; -fx-background-radius: 8,7,6; -fx-base: #dddddd;");
 
-     // Connection conn = null;
-//    String dbURL = "jdbc:sqlite:C:/JavaProg/dbProject.db";
      ArrayList<String> stuff = new ArrayList<String>();
      ArrayList<String> recipes = new ArrayList<String>();
      Scene Opening, Other;
 
 
 // @Override
-
+// This is the Login page for the database and uses the userName as the primary key
      public void start(Stage primaryStage) throws Exception {
          //connection to Database
-//Connection con = Connect();
          primaryStage.setTitle("Kitchen Helper");
          //text + text styling
-         Text wlcmLbl = new Text("Welcome to KitchenHelper");
-         wlcmLbl.setFont(Font.font("Times New Roman", FontWeight.BOLD, 28));
-
-//final String userName = "";
+         Text wlcmLbl = new Text("Welcome to KitchenHelper ");
+         wlcmLbl.setFont(Font.font("Georgia", FontWeight.BOLD, 28));
+         wlcmLbl.setTextAlignment(TextAlignment.CENTER);
          BorderPane bp = new BorderPane();
-         bp.setPadding(new Insets(10, 50, 50, 50));
+         bp.setPadding(new Insets(10, 20, 20, 20));
 
-         Label nameLbl = new Label("Enter a username:");
+         Label nameLbl = new Label("Enter a Username:");
          TextField userTxt = new TextField();
 
          VBox logBox = new VBox();
 
-         logBox.setPadding(new Insets(5, 5, 5, 15));
+         logBox.setPadding(new Insets(5, 5, 5, 5));
 
-         Button enterBtn = new Button("Enter");
+         Button enterBtn = new Button("Enter Your Username");
          //this button registers a new user
-         Button registerBtn = new Button("Register your username");
+         Button registerBtn = new Button("Register Your Username");
+
+         Text error = new Text();
+         error.setFill(Color.RED);
 
          enterBtn.setOnAction(new EventHandler<ActionEvent>() {
 
@@ -65,46 +68,36 @@ public class Main extends Application {
                          MainMenu(primaryStage);
                          }
                             System.out.println(fridgeStuff);
-                     } else {
+                    } else {
+                        error.setText("Error! You need to Register Your Username!");
 
                      }
-//   System.out.println(userName);
-                                  }
 
+                 }
 
-                              }
+         }
          );
+
 
          registerBtn.setOnAction(new EventHandler<ActionEvent>() {
 
               public void handle(ActionEvent e) {
                   if ((userTxt.getText()) != null && !userTxt.getText().isEmpty()) {
-                      userName = (userTxt.getText());
                       System.out.println(userName);
                       if (!InsertUserData()) {
                           MainMenu(primaryStage);
                       }
                       System.out.println(fridgeStuff);
                   } else {
-                      //new usser created empty fridge
-
+                      if (userTxt.getText().isEmpty()){
+                        error.setText("Error! You need to enter a username!");
+                        }
                   }
-//   System.out.println(userName);
-                                  }
-
-
-                              }
+              }
+         }
          );
 
-         /*
-  enterBtn.setOnAction(e -> {
-
-           MainMenu(primaryStage);
-           //}
-          } */
-         //);
-
-         logBox.getChildren().addAll(wlcmLbl, bp, nameLbl, userTxt, enterBtn, registerBtn);
+         logBox.getChildren().addAll(wlcmLbl, bp, nameLbl, error, userTxt, enterBtn, registerBtn);
 
          Opening = new Scene(logBox, 500, 500);
 
@@ -112,7 +105,11 @@ public class Main extends Application {
          primaryStage.show();
 
      }
-
+     /*Check Login method
+        -returns a boolean namecode
+            - false = name hasn't been found
+            - true = name has been found and loads user's previous fridge into fridgeStuff
+    */
      public boolean CheckLogin() {
          Boolean nameCode = false;
          try {
@@ -134,7 +131,12 @@ public class Main extends Application {
          return nameCode;
      }
 
-        public boolean InsertUserData()    {
+     /*InsertUserData
+        -returns a boolean
+        -returns false if name is found and puts fridge in fridgeStuff
+        - returns true if name isn't found and inserts data into the database
+     */
+     public boolean InsertUserData()    {
             Boolean nameCode = true;
             try {
                 Connection con = DriverManager.getConnection(jdbcUrl);
@@ -147,14 +149,13 @@ public class Main extends Application {
                     fridgeStuff = rs.getString("Fridge");
                     System.out.println("DB OK");
                 }
-                else                   {
-                        nameCode = true;
-                        stmt.executeUpdate("INSERT INTO Users (User,Fridge) " +
+                else {
+                    nameCode = true;
+                    stmt.executeUpdate("INSERT INTO Users (User,Fridge) " +
                                 "VALUES('" + userName + "', '" + fridgeStuff + "')");
                     }
                 stmt.close();
                 con.close();
-
 
             } catch (SQLException sqlE) {
                 System.out.println("SQL Exception " + sqlE.toString());
@@ -163,11 +164,12 @@ public class Main extends Application {
     }
 
 
-
     public void MainMenu(Stage primaryStage) {
-         Label label1 = new Label("Welcome to KitchenHelper");
+         Label label1 = new Label("Hey " + userName +" Welcome to KitchenHelper!");
          Label label2 = new Label("What do we have to work with today?");
 
+         Text Food = new Text("You currently have: " + fridgeStuff + " in your fridge");
+         label1.setPadding(new Insets(5, 5, 5, 35));
          VBox layout1 = new VBox(25);
          primaryStage.setTitle("Kitchen Helper");
          Scene MainMenu = new Scene(layout1, 400, 500);
@@ -181,28 +183,26 @@ public class Main extends Application {
          Button btnVeg = new Button("Vegetables");
          Button btnGrain = new Button("Grains");
          Button btnDone = new Button("Done");
-
-
+         
          btnDairy.setOnAction(e -> DairyMenu(primaryStage));
          btnMeat.setOnAction(e -> MeatMenu(primaryStage));
          btnFruit.setOnAction(e -> FruitMenu(primaryStage));
          btnVeg.setOnAction(e -> VeggieMenu(primaryStage));
          btnGrain.setOnAction(e -> GrainMenu(primaryStage));
          btnDone.setOnAction(e ->
-                 {
-                     try {
-                         conclusion(primaryStage);
-                     } catch (Exception e1) {
-                         e1.printStackTrace();
-                     }
+             {
+                 try {
+                     conclusion(primaryStage);
+                 } catch (Exception e1) {
+                     e1.printStackTrace();
                  }
+             }
          );
 
-         layout1.getChildren().addAll(label1, label2, btnDairy, btnMeat, btnFruit, btnVeg, btnGrain, btnDone);
+         layout1.getChildren().addAll(label1, Food, label2, btnDairy, btnMeat, btnFruit, btnVeg, btnGrain, btnDone);
 
          primaryStage.setScene(MainMenu);
          primaryStage.show();
-
 
      }
 
@@ -216,7 +216,6 @@ public class Main extends Application {
 
          Button btnAdd = new Button("Add");
          Button btnBack = new Button("Back");
-
 
          CheckBox[] boxes = new CheckBox[5];
 
@@ -232,7 +231,6 @@ public class Main extends Application {
          boxes[3] = c4;
          boxes[4] = c5;
 
-
          btnAdd.setOnAction(e ->
          {
              try {
@@ -243,12 +241,12 @@ public class Main extends Application {
              } catch (Exception e1) {
                  e1.printStackTrace();
              }
-         });
+         }
+         );
 
          layout1.getChildren().addAll(lblDairy, c1, c2, c3, c4, c5, btnAdd, btnBack);
          primaryStage.setScene(Dairy);
          primaryStage.show();
-
 
          btnBack.setOnAction(e ->
          {
@@ -268,10 +266,8 @@ public class Main extends Application {
          Scene Meat = new Scene(layout1, 400, 400);
          layout1.setPadding(new Insets(5, 5, 5, 15));
 
-
          Button btnAdd = new Button("Add");
          Button btnBack = new Button("Back");
-
 
          CheckBox[] boxes = new CheckBox[5];
 
@@ -287,19 +283,17 @@ public class Main extends Application {
          boxes[3] = c4;
          boxes[4] = c5;
 
-
          btnAdd.setOnAction(e ->
          {
              try {
                  addFood(boxes, 4);
-
                  SelectionMade(primaryStage);
 
              } catch (Exception e1) {
                  e1.printStackTrace();
              }
-         });
-
+         }
+         );
 
          layout1.getChildren().addAll(lblMeat, c1, c2, c3, c4, c5, btnAdd, btnBack);
          primaryStage.setScene(Meat);
@@ -323,10 +317,8 @@ public class Main extends Application {
          Scene Fruit = new Scene(layout1, 400, 400);
          layout1.setPadding(new Insets(5, 5, 5, 15));
 
-
          Button btnAdd = new Button("Add");
          Button btnBack = new Button("Back");
-
 
          CheckBox[] boxes = new CheckBox[5];
 
@@ -342,7 +334,6 @@ public class Main extends Application {
          boxes[3] = c4;
          boxes[4] = c5;
 
-
          btnAdd.setOnAction(e ->
          {
              try {
@@ -354,7 +345,6 @@ public class Main extends Application {
                  e1.printStackTrace();
              }
          });
-
 
          layout1.getChildren().addAll(fLabel, c1, c2, c3, c4, c5, btnAdd, btnBack);
          primaryStage.setScene(Fruit);
@@ -378,10 +368,8 @@ public class Main extends Application {
          Scene Veggie = new Scene(layout1, 400, 400);
          layout1.setPadding(new Insets(5, 5, 5, 15));
 
-
          Button btnAdd = new Button("Add");
          Button btnBack = new Button("Back");
-
 
          CheckBox[] boxes = new CheckBox[5];
 
@@ -408,7 +396,8 @@ public class Main extends Application {
              } catch (Exception e1) {
                  e1.printStackTrace();
              }
-         });
+         }
+         );
 
 
          layout1.getChildren().addAll(vLabel, c1, c2, c3, c4, c5, btnAdd, btnBack);
@@ -424,7 +413,6 @@ public class Main extends Application {
              }
          });
      }
-
 
      public void GrainMenu(Stage primaryStage) {
 
@@ -449,7 +437,6 @@ public class Main extends Application {
          boxes[1] = c2;
          boxes[2] = c3;
 
-
          btnAdd.setOnAction(e ->
          {
              try {
@@ -461,7 +448,6 @@ public class Main extends Application {
                  e1.printStackTrace();
              }
          });
-
 
          layout1.getChildren().addAll(vLabel, c1, c2, c3, btnAdd, btnBack);
          primaryStage.setScene(Veggie);
@@ -477,7 +463,6 @@ public class Main extends Application {
          });
      }
 
-
      public void addFood(CheckBox[] boxes, int x) {
          for (int i = 0; i <= x; i++) {
              if (boxes[i].isSelected()) {
@@ -486,7 +471,6 @@ public class Main extends Application {
              }
          }
      }
-
 
      public void SelectionMade(Stage primaryStage) {
          primaryStage.setTitle("Limbo");
@@ -546,8 +530,8 @@ public class Main extends Application {
                      }
                  }
          );
-         Button btnMeat = new Button("Exit");
-         btnMeat.setOnAction(e ->
+         Button exitBtn = new Button("Exit");
+         exitBtn.setOnAction(e ->
                  {
                      try {
                          cancel();
@@ -557,6 +541,7 @@ public class Main extends Application {
                  }
          );
 
+         //
          StringBuilder newFood = new StringBuilder();
          for (String s : stuff){
 
@@ -576,61 +561,33 @@ public class Main extends Application {
 
 
          deleteBtn.setOnAction(new EventHandler<ActionEvent>() {
-
-
-                                   public void handle(ActionEvent e) {
-                                       if (userName != null && !userName.isEmpty()) {
-                                           System.out.println(userName);
-                                           System.out.println(fridgeStuff);
-                                           DeleteData();
-                                           //         MainMenu(primaryStage);
-                                       }
-                                       System.out.println(fridgeStuff);
-                                       //new usser created empty fridge
-
-                                   }
-
-
-
-                               }
-         );
+            public void handle(ActionEvent e) {
+             if (userName != null && !userName.isEmpty()) {
+                   System.out.println(userName);
+                   System.out.println(fridgeStuff);
+                   DeleteData();
+             }
+            }
+            });
 
          saveBtn.setOnAction(new EventHandler<ActionEvent>() {
 
-                                     public void handle(ActionEvent e) {
-                                         if (userName != null && !userName.isEmpty()) {
-                                             System.out.println(userName);
-                                           System.out.println(fridgeStuff);
-                                            SaveData();
-                                        //         MainMenu(primaryStage);
-                                             }
-                                             System.out.println(fridgeStuff);
-                                             //new usser created empty fridge
+             public void handle(ActionEvent e) {
+                 if (userName != null && !userName.isEmpty()) {
+                     SaveData();
+                     }
 
-                                         }
-                                    }
-
-
-
+                 }
+            }
          );
+         //delete button
          deletefBtn.setOnAction(new EventHandler<ActionEvent>() {
-
-
-                                   public void handle(ActionEvent e) {
-                                       if (userName != null && !userName.isEmpty()) {
-                                           System.out.println(userName);
-                                           System.out.println(fridgeStuff);
-                                           DeleteFridge();
-                                           //         MainMenu(primaryStage);
-                                       }
-                                       System.out.println(fridgeStuff);
-                                       //new usser created empty fridge
-
-                                   }
-
-
-
-                               }
+               public void handle(ActionEvent e) {
+                   if (userName != null && !userName.isEmpty()) {
+                       DeleteFridge();
+                   }
+               }
+           }
          );
 
          txtDone.setText("You have " + stuff + "\nWith that you can make: " +
@@ -638,12 +595,12 @@ public class Main extends Application {
 
          Scene Selection = new Scene(layout1, 400, 400);
 
-         layout1.getChildren().addAll(txtDone, btnDairy, btnMeat, saveBtn,deleteBtn,deletefBtn);
+         layout1.getChildren().addAll(txtDone, btnDairy, saveBtn, deleteBtn, deletefBtn, exitBtn);
          primaryStage.setScene(Selection);
          primaryStage.show();
      }
 
-     //Jen's STUFF PreviousRecipe method connects to DbBtn
+     //SaveData: connects to the database and saves the stuff to the fridge
 
     public void SaveData()    {
         try {
@@ -654,7 +611,6 @@ public class Main extends Application {
 
             stmt.close();
             con.close();
-        System.out.println("DB OK");
 
 
     } catch (SQLException sqlE) {
@@ -689,30 +645,10 @@ public class Main extends Application {
             con.close();
             System.out.println("DB OK");
 
-
         } catch (SQLException sqlE) {
             System.out.println("SQL Exception " + sqlE.toString());
         }
     }
-
-
-
-    public void PreviousRecipe(Stage primaryStage) {
-
-         primaryStage.setTitle("Your Previous selection");
-         VBox layout1 = new VBox(20);
-         layout1.setPadding(new Insets(5, 5, 5, 15));
-
-
-         Label accLabel = new Label("This is the recipe that is associated with this account ");
-         Scene PrevRecip = new Scene(layout1, 400, 400);
-         layout1.setPadding(new Insets(5, 5, 5, 15));
-
-         layout1.getChildren().addAll(accLabel);
-         primaryStage.setScene(PrevRecip);
-         primaryStage.show();
-
-     }
 
      // thing to bail out, mostly a formatting thing I will remove it prior to submitting it
      public static void cancel() {
