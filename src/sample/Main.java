@@ -2,6 +2,8 @@ package sample;
 import java.io.Console;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Optional;
+
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -57,7 +59,7 @@ public class Main extends Application {
 
          Text error = new Text();
          error.setFill(Color.RED);
-
+        // on action the enter button checks if textfield is empty
          enterBtn.setOnAction(new EventHandler<ActionEvent>() {
 
              public void handle(ActionEvent e) {
@@ -66,15 +68,21 @@ public class Main extends Application {
                      System.out.println(userName);
                      if (CheckLogin()) {
                          MainMenu(primaryStage);
-                         }
-                            System.out.println(fridgeStuff);
-                    } else {
-                        error.setText("Error! You need to Register Your Username!");
-
+                     } else {
+                         Alert alert = new Alert(Alert.AlertType.WARNING);
+                         alert.setTitle("Error!");
+                         alert.setHeaderText("Error! The name you have entered is not in the database!");
+                         alert.setContentText("Error! You need to Register your username!");
+                         alert.showAndWait();
                      }
-
+                 } else {
+                     Alert alert = new Alert(Alert.AlertType.WARNING);
+                     alert.setTitle("Error!");
+                     alert.setHeaderText("Error! You have not entered a name!");
+                     alert.setContentText("Error! You have not entered a name!");
+                     alert.showAndWait();
                  }
-
+             }
          }
          );
 
@@ -85,13 +93,29 @@ public class Main extends Application {
                   if ((userTxt.getText()) != null && !userTxt.getText().isEmpty()) {
                       System.out.println(userName);
                       if (!InsertUserData()) {
-                          MainMenu(primaryStage);
+                          Alert alert = new Alert(Alert.AlertType.WARNING);
+                          alert.setTitle("Warning!");
+                          alert.setHeaderText(userName + " is already Registered.!");
+                          alert.setContentText("You are now Logged in!");
+                          alert.showAndWait();
                       }
-                      System.out.println(fridgeStuff);
+                      else  {
+                          Alert alert = new Alert(Alert.AlertType.WARNING);
+                          alert.setTitle("Warning!");
+                          alert.setHeaderText(userName + " is now Registered!");
+                          alert.setContentText("You are now Logged in!");
+                          alert.showAndWait();
+
+                      }
+                      MainMenu(primaryStage);
+
                   } else {
-                      if (userTxt.getText().isEmpty()){
-                        error.setText("Error! You need to enter a username!");
-                        }
+                          Alert alert = new Alert(Alert.AlertType.WARNING);
+                          alert.setTitle("Error!");
+                          alert.setHeaderText("Error! You need to enter a username!");
+                          alert.setContentText("Error! You need to enter a username!");
+                          alert.showAndWait();
+
                   }
               }
          }
@@ -557,16 +581,23 @@ public class Main extends Application {
 
          Button saveBtn = new Button("Save Fridge");
          Button deleteBtn = new Button("Delete User Data");
-         Button deletefBtn = new Button("Delete User Fridge");
+         Button deleteFoodBtn = new Button("Delete User Fridge");
 
-
+    // this method delete the user and  pop up message to confirm if the user wants to Delete the user
          deleteBtn.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent e) {
-             if (userName != null && !userName.isEmpty()) {
-                   System.out.println(userName);
-                   System.out.println(fridgeStuff);
-                   DeleteData();
-             }
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Delete User");
+                alert.setHeaderText("Delete User");
+                alert.setContentText("Are you sure you want to delete the user?");
+
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.get() == ButtonType.OK){
+                    if (userName != null && !userName.isEmpty()) {
+                        DeleteData();
+                    }
+                }
+
             }
             });
 
@@ -580,12 +611,21 @@ public class Main extends Application {
                  }
             }
          );
-         //delete button
-         deletefBtn.setOnAction(new EventHandler<ActionEvent>() {
-               public void handle(ActionEvent e) {
-                   if (userName != null && !userName.isEmpty()) {
-                       DeleteFridge();
-                   }
+         //delete button and  pop up message to confirm if the user wants to Delete the fridge
+         deleteFoodBtn.setOnAction(new EventHandler<ActionEvent>() {
+             public void handle(ActionEvent e) {
+                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                 alert.setTitle("Delete Fridge");
+                 alert.setHeaderText("Delete Fridge");
+                 alert.setContentText("Are you sure you want to delete the food in your fridge?");
+
+                 Optional<ButtonType> result = alert.showAndWait();
+                 if (result.get() == ButtonType.OK){
+                     if (userName != null && !userName.isEmpty()) {
+                         DeleteFridge();
+                     }
+                 }
+
                }
            }
          );
@@ -595,7 +635,7 @@ public class Main extends Application {
 
          Scene Selection = new Scene(layout1, 400, 400);
 
-         layout1.getChildren().addAll(txtDone, btnDairy, saveBtn, deleteBtn, deletefBtn, exitBtn);
+         layout1.getChildren().addAll(txtDone, btnDairy, saveBtn, deleteBtn, deleteFoodBtn, exitBtn);
          primaryStage.setScene(Selection);
          primaryStage.show();
      }
