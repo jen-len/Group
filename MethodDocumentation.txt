@@ -1,0 +1,86 @@
+
+//global string which contains userName entered to DB
+
+//global String fridgeStuff which contains the current saved Fridge of userName
+
+
+/* This is the Login page for the database and uses the userName as the primary key
+		on action the enter button checks if textfield is empty or if the username is not in DB
+		register button checks if text field is empty or if your name wasn't previously
+		registered it is now entered toDB and continue to MainMenu stage
+ */
+
+/*Check Login method
+        -returns a boolean namecode
+            - false = name hasn't been found
+            - true = name has been found and loads user's previous fridge into fridgeStuff
+    */
+	
+	 /*InsertUserData
+        -returns a boolean
+        -returns false if name is found and puts fridge in fridgeStuff
+        - returns true if name isn't found and inserts data into the database
+     */
+	 
+	 
+	 /*Main Menu displays the username and the fridge stuff of the user
+		from main menu the user can go to the different scenes:
+        DairyMenu, MeatMenu, VegetableMenu, FruitMenu, GrainMenu, and ConclusionMenu
+  */
+  
+  
+  /* The DairyMenu Presents a variety of options to add to your Fridge from the add button
+	takes you to the SelectionMenu and the back button takes you back to the main menu
+ */
+ 
+ 
+ 
+    /* The MeatMenu Presents a variety of options to add to your Fridge from the add button
+      takes you to the SelectionMenu and the back button takes you back to the main menu
+     */
+	 
+	 
+    /*The FruitMenu Presents a variety of options to add to your Fridge from the add button
+      takes you to the SelectionMenu and the back button takes you back to the main menu
+     */
+	 
+	 /* The VeggieMenu Presents a variety of options to add to your Fridge from the add button
+      takes you to the SelectionMenu and the back button takes you back to the main menu
+     */
+	 
+	 
+	  /* The GrainMenu Presents a variety of options to add to your Fridge from the add button
+      takes you to the SelectionMenu and the back button takes you back to the main menu
+     */
+	 
+	 
+	 
+	 /*The addFood method takes in th data from the checkboxes and the counter and adds them to the food string
+     */
+	 
+	 
+	 /* SelectionMade allows you to confirm food entry and Continue or go back to the MainMenu
+
+     */
+	 
+	 
+	 /*Conclusion display the unsaved Food fridge and displays
+		the recipes that can be made with your collection of food
+		with the buttons: -you can go back to the MainMenu
+						  -Save your fridge
+                          - Delete your UserData from DB
+                          - Delete you Food from DB
+                          - Exit Application
+
+	*/
+	 
+	 
+	  //SaveData: connects to the database and saves the stuff to the fridge
+	  
+	  
+	  //DeleteFridge: method connects to the database fridge by setting them to null by using userName
+
+	  //DeleteData:method connects to the database to delete the user and fridge by setting them to null
+
+
+	 
