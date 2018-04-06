@@ -8,7 +8,6 @@ import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
@@ -24,7 +23,9 @@ import javafx.stage.Stage;
 public class Main extends Application {
      Fridge fridge = new Fridge();
      int x = 0;
+     //global string which contains userName entered to DB
      static String userName = "";
+     //global String which contains the current saved Fridge of userName
      static String fridgeStuff = "";
      static String jdbcUrl = "jdbc:sqlite:src/dbProject.db";
      String grey = ("-fx-font: 14 arial; -fx-background-radius: 8,7,6; -fx-base: #dddddd;");
@@ -59,7 +60,7 @@ public class Main extends Application {
 
          Text error = new Text();
          error.setFill(Color.RED);
-        // on action the enter button checks if textfield is empty
+        // on action the enter button checks if textfield is empty or if the username is not in DB
          enterBtn.setOnAction(new EventHandler<ActionEvent>() {
 
              public void handle(ActionEvent e) {
@@ -86,7 +87,9 @@ public class Main extends Application {
          }
          );
 
-
+/*register button checks if text field is empty or if your name wasn't previously
+        registed it is now entered toDB and continue to MainMenu stage
+         */
          registerBtn.setOnAction(new EventHandler<ActionEvent>() {
 
               public void handle(ActionEvent e) {
@@ -187,9 +190,12 @@ public class Main extends Application {
             return nameCode;
     }
 
-
+/*Main Menu displays the username and the fridge stuff of the user
+    from main menu the user can go to the different scenes:
+        DairyMenu, MeatMenu, VegetableMenu, FruitMenu, GrainMenu, and conclusionmenu
+  */
     public void MainMenu(Stage primaryStage) {
-         Label label1 = new Label("Hey " + userName +" Welcome to KitchenHelper!");
+         Label label1 = new Label("Hey " + userName +"! Welcome to KitchenHelper!");
          Label label2 = new Label("What do we have to work with today?");
 
          Text Food = new Text("You currently have: " + fridgeStuff + " in your fridge");
@@ -230,6 +236,9 @@ public class Main extends Application {
 
      }
 
+/** The DairyMenu Presents a variety of options to add to your Fridge from the add button
+ * takes you to the SelectionMenu and the back button takes you back to the main menu
+ */
 
      public void DairyMenu(Stage primaryStage) {
          primaryStage.setTitle("Dairy");
@@ -282,7 +291,9 @@ public class Main extends Application {
          });
      }
 
-
+    /** The MeatMenu Presents a variety of options to add to your Fridge from the add button
+     * takes you to the SelectionMenu and the back button takes you back to the main menu
+     */
      public void MeatMenu(Stage primaryStage) {
          primaryStage.setTitle("Meat");
          VBox layout1 = new VBox(20);
@@ -333,7 +344,9 @@ public class Main extends Application {
          });
      }
 
-
+    /** The FruitMenu Presents a variety of options to add to your Fridge from the add button
+     * takes you to the SelectionMenu and the back button takes you back to the main menu
+     */
      public void FruitMenu(Stage primaryStage) {
          primaryStage.setTitle("Fruit");
          VBox layout1 = new VBox(20);
@@ -384,7 +397,9 @@ public class Main extends Application {
          });
      }
 
-
+    /** The VeggieMenu Presents a variety of options to add to your Fridge from the add button
+     * takes you to the SelectionMenu and the back button takes you back to the main menu
+     */
      public void VeggieMenu(Stage primaryStage) {
          primaryStage.setTitle("Vegetables");
          VBox layout1 = new VBox(20);
@@ -438,6 +453,9 @@ public class Main extends Application {
          });
      }
 
+    /** The GrainMenu Presents a variety of options to add to your Fridge from the add button
+     * takes you to the SelectionMenu and the back button takes you back to the main menu
+     */
      public void GrainMenu(Stage primaryStage) {
 
          primaryStage.setTitle("Grains");
@@ -487,6 +505,8 @@ public class Main extends Application {
          });
      }
 
+    /** The addFood method takes in th data from the checkboxes and the counter and adds them to the food string
+     */
      public void addFood(CheckBox[] boxes, int x) {
          for (int i = 0; i <= x; i++) {
              if (boxes[i].isSelected()) {
@@ -496,8 +516,11 @@ public class Main extends Application {
          }
      }
 
-     public void SelectionMade(Stage primaryStage) {
-         primaryStage.setTitle("Limbo");
+    /* SelectionMade allows you to confirm food entry and Continue
+
+     */
+    public void SelectionMade(Stage primaryStage) {
+         primaryStage.setTitle("Confirmation");
          VBox layout1 = new VBox(20);
          layout1.setPadding(new Insets(5, 5, 5, 15));
 
@@ -533,7 +556,15 @@ public class Main extends Application {
          primaryStage.show();
      }
 
+/*Conclusion display the unsaved Food fridge and displays
+the recipes that can be made with your collection of food
+with the buttons: -you can go back to the MainMenu
+                  -Save your fridge
+                  - Delete your UserData from DB
+                  - Delete you Food from DB
+                  -
 
+ */
      public void conclusion(Stage primaryStage) {
          primaryStage.setTitle("conclusion");
          VBox layout1 = new VBox(20);
@@ -542,11 +573,11 @@ public class Main extends Application {
          TextArea txtDone = new TextArea();
          txtDone.setEditable(false);
 
+         Text saveFood = new Text("If you would like to save your food selection, Press 'Save Fridge'");
          Button btnDairy = new Button("but wait... There's more");
          btnDairy.setOnAction(e ->
                  {
                      try {
-//                         stuff.clear();
                          fridge.setCounter(0);
                          MainMenu(primaryStage);
                      } catch (Exception e1) {
@@ -565,7 +596,7 @@ public class Main extends Application {
                  }
          );
 
-         //
+         // this builds a string out of the array of strings to be put in the database
          StringBuilder newFood = new StringBuilder();
          for (String s : stuff){
 
@@ -575,9 +606,9 @@ public class Main extends Application {
          }
 
 
-   System.out.println(newFood);
+    //adds the new food to the fridge stuff
     fridgeStuff = fridgeStuff + newFood;
-        System.out.println(fridgeStuff);
+
 
          Button saveBtn = new Button("Save Fridge");
          Button deleteBtn = new Button("Delete User Data");
@@ -635,7 +666,7 @@ public class Main extends Application {
 
          Scene Selection = new Scene(layout1, 400, 400);
 
-         layout1.getChildren().addAll(txtDone, btnDairy, saveBtn, deleteBtn, deleteFoodBtn, exitBtn);
+         layout1.getChildren().addAll(txtDone, saveFood, btnDairy, saveBtn, deleteBtn, deleteFoodBtn, exitBtn);
          primaryStage.setScene(Selection);
          primaryStage.show();
      }
@@ -657,7 +688,7 @@ public class Main extends Application {
             System.out.println("SQL Exception " + sqlE.toString());
         }
     }
-
+//delete fridge connects to the database to delete the user and fridge by setting them to null
     public void DeleteFridge()    {
         try {
             Connection con = DriverManager.getConnection(jdbcUrl);
@@ -674,16 +705,15 @@ public class Main extends Application {
             System.out.println("SQL Exception " + sqlE.toString());
         }
     }
-
+    //delete fridge connects to the database fridge by setting them to null by using userName
     public void DeleteData()    {
         try {
             Connection con = DriverManager.getConnection(jdbcUrl);
             Statement stmt = con.createStatement();
             stmt.executeUpdate("DELETE FROM Users WHERE User = '" + userName + "'");
-
             stmt.close();
             con.close();
-            System.out.println("DB OK");
+
 
         } catch (SQLException sqlE) {
             System.out.println("SQL Exception " + sqlE.toString());
